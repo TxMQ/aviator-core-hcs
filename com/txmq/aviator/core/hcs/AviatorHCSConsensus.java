@@ -101,7 +101,7 @@ public class AviatorHCSConsensus extends Aviator implements IAviator {
 			if (message.isInterrupted() == false) {
 				//TODO:  We need a better way to cut this in, maybe some kind of interceptor model?
 				//Can't make block logging optional at the build level with this dependency in place.
-				AviatorBlockLoggerBootstrapper.getBlockLogger().addTransaction(message, this.myName);
+				AviatorBlockLoggerBootstrapper.getBlockLogger().addTransaction(message, this.getNodeNameImpl();
 			}
 		} catch (IOException | ReflectiveOperationException e) {
 			// TODO Auto-generated catch block
