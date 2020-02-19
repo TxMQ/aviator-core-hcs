@@ -15,6 +15,7 @@ import com.hedera.hashgraph.sdk.crypto.ed25519.Ed25519PrivateKey;
 import com.hedera.hashgraph.sdk.mirror.MirrorClient;
 import com.hedera.hashgraph.sdk.mirror.MirrorConsensusTopicQuery;
 import com.hedera.hashgraph.sdk.mirror.MirrorConsensusTopicResponse;
+import com.txmq.aviator.blocklogger.AviatorBlockLoggerBootstrapper;
 import com.txmq.aviator.config.AviatorConfig;
 import com.txmq.aviator.config.model.HCSConfig;
 import com.txmq.aviator.core.Aviator;
@@ -97,6 +98,11 @@ public class AviatorHCSConsensus extends Aviator implements IAviator {
 		try {
 			AviatorMessage<?> message = AviatorMessage.deserialize(topicResponse.message);
 			getPipelineRouter().routeExecuteConsensus(message, state);
+			if (message.isInterrupted() == false) {
+				//TODO:  We need a better way to cut this in, maybe some kind of interceptor model?
+				//Can't make block logging optional at the build level with this dependency in place.
+				AviatorBlockLoggerBootstrapper.getBlockLogger().addTransaction(message, this.myName);
+			}
 		} catch (IOException | ReflectiveOperationException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
